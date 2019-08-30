@@ -71,6 +71,15 @@ CFLAGS		= $(CONFIG_CFLAGS) -Wall -fPIC
 LDFLAGS		= @LDFLAGS@
 LIBS		= @LIBS@
 PATHSEP		= /
+ifeq '$(shell uname -s)' 'SunOS'
+SONAME_SUFFIX          = =
+else
+EMPTY                  =
+SPACE                  = $(EMPTY) $(EMPTY)
+SONAME_SUFFIX          = $(SPACE)
+endif
+SONAME          = -soname$(SONAME_SUFFIX)
+
 
 # 
 # liquid headers
@@ -1197,7 +1206,7 @@ libliquid.a: $(objects)
 	${RANLIB} $@
 
 libliquid.so: libliquid.a
-	$(CC) $(CFLAGS) $(LDFLAGS) -shared -Xlinker -soname=$@ -o $@ -Wl,-whole-archive $^ -Wl,-no-whole-archive $(LIBS)
+	$(LD) $(LDFLAGS) -shared $(SONAME)$@ -o $@ --whole-archive $^ --no-whole-archive $(LIBS)
 
 # static archive and library objects
 all: ${ARCHIVE_LIB} ${SHARED_LIB}
