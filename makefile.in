@@ -1675,13 +1675,14 @@ sandbox_programs =						\
 
 sandbox_objects	= $(patsubst %,%.o,$(sandbox_programs))
 sandbox: $(sandbox_programs)
-SANDBOX_LDFLAGS = $(LDFLAGS) -lfftw3f
+SANDBOX_LDFLAGS = $(LDFLAGS)
+SANDBOX_LIBS = $(LIBS) -lfftw3f
 
 # NOTE: linked libraries must come _after_ the target program
 $(sandbox_objects): %.o : %.c
 
 $(sandbox_programs): % : %.o ${ARCHIVE_LIB}
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(SANDBOX_LIBS)
 
 # clean sandbox
 clean-sandbox:
